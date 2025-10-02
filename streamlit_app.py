@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import joblib
+import pickel
 import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import warnings
@@ -55,10 +55,14 @@ st.markdown("Predict whether a customer will churn based on their profile inform
 def load_model():
     """Load the trained model and preprocessing objects"""
     try:
-        model = joblib.load('customer_churn_model.pkl')
+        with open('customer_churn_model.pkl', 'rb') as file:
+            model = pickle.load(file)
         return model
     except FileNotFoundError:
         st.error("Model file 'customer_churn_model.pkl' not found. Please make sure it's in the same directory.")
+        return None
+    except Exception as e:
+        st.error(f"Error loading model: {str(e)}")
         return None
 
 def preprocess_input(user_input, cat_list, num_list):
